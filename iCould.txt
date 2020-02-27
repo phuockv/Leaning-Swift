@@ -1,0 +1,37 @@
+// iCould
+
+
+The iCloud key-value storage is like the UserDefaults but synced across devices. It also survives uninstalls of the app. I used it today to add iCloud backups to Emoji Diary. It required 4 lines of code.
+Activate the iCloud capability
+Select your project in Xcode and then select the target under "Project and Targets". Activate iCloud and check "Key-Value storage".
+
+
+Add iCloud to your App ID
+Go to https://developer.apple.com/account/ -> Certificates, Identifiers & Profiles
+Under Identifiers -> App IDs, edit your App ID and check the iCloud box. For Key-Value storage "Compatible with Xcode 5" suffices. CloudKit is for documents, large files and Core Data. Click Done.
+Go to your Provisioning Profiles. You will see that they turned invalid. For each of them, click edit and then generate to regenerate them. By opening the downloaded Provisioning Profiles, Xcode will automatically update them.
+4 lines of code
+Wherever you need to access the key-value store, call
+
+    
+var keyStore = NSUbiquitousKeyValueStore()
+
+Add data just like with the UserDefaults:
+
+    
+keyStore.set("John Appleseed", forKey: "userName")
+
+Retrieve data somewhere else with:
+
+    
+let storedUserName = keyStore.string(forKey: "userName")
+
+So far, the keyStore acts like the UserDefaults. The data will be stored locally. To sync them with iCloud, call
+
+    
+keyStore.synchronize()
+
+This may not synchronize immediately but at "an appropriate later time" as the Apple Docs put it.
+
+Like what you read?
+I don't use Google Analytics or Disqus because they require cookies. I would still like to know, which posts are popular, so if you liked this post you can let me know here.
